@@ -1,0 +1,20 @@
+{
+  "name": "ebd-planejador",
+  "title": "EBD Planejador",
+  "description": "Planejamento de aulas, referências, dinâmicas e materiais de estudo.",
+  "primary_language": "PHP",
+  "proposed_technologies": "PHP, Laravel, Blade e MariaDB",
+  "status": "initial-core",
+  "github_created": true,
+  "application_implemented": true,
+  "planned_features": [
+    "Planejar sequência da aula",
+    "Organizar referências e dinâmicas",
+    "Exportar material autoral para os alunos"
+  ],
+  "implemented_technologies": [
+    "PHP",
+    "Biblioteca padrão"
+  ],
+  "validation": "Consulte GitHub Actions"
+}
