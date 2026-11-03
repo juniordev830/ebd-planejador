@@ -4,7 +4,7 @@ Planejamento de aulas, referências, dinâmicas e materiais de estudo.
 
 ## Implementado na primeira versão
 
-**PHP — núcleo executável de domínio.** Monta uma sequência de blocos da aula, calcula início e fim de cada etapa e rejeita um roteiro maior que o tempo disponível.
+**PHP — núcleo executável de domínio.** Monta uma sequência de blocos da aula, calcula início e fim de cada etapa e rejeita um roteiro maior que o tempo disponível. Valida que os blocos formam uma lista e que `titulo` e `referencia` são textos, evitando estruturas inesperadas no resultado.
 
 ## Como executar
 
@@ -13,6 +13,8 @@ Instale PHP 8.3 CLI. Não há dependências Composer. Os comandos abaixo partem 
 ```sh
 php main.php 90 examples/aula.json
 ```
+
+O arquivo da aula deve conter uma lista JSON. Cada bloco exige `titulo` (texto não vazio) e `minutos` (inteiro positivo); `referencia` é opcional, mas precisa ser texto quando informada.
 
 ## Testes
 
