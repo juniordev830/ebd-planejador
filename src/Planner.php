@@ -289,11 +289,11 @@ final class Planner
         if (!preg_match('//u', $value)) {
             throw new \InvalidArgumentException("$field deve ser UTF-8");
         }
-        if (function_exists('mb_strlen') && mb_strlen($value, 'UTF-8') > $max) {
+        $characters = function_exists('mb_strlen')
+            ? mb_strlen($value, 'UTF-8')
+            : preg_match_all('/./us', $value);
+        if ($characters === false || $characters > $max) {
             throw new \InvalidArgumentException("$field excede $max caracteres");
-        }
-        if (!function_exists('mb_strlen') && strlen($value) > $max * 4) {
-            throw new \InvalidArgumentException("$field excede o limite");
         }
         return $value;
     }
