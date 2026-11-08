@@ -1,0 +1,49 @@
+{
+  "titulo": "Alegria e perseverança — Filipenses",
+  "turma": "Jovens",
+  "data": "2026-11-08",
+  "inicio": "09:30",
+  "duracao": 90,
+  "objetivo": "Reconhecer a alegria cristã e aplicá-la à vida diária.",
+  "blocos": [
+    {
+      "titulo": "Pergunta inicial e acolhimento",
+      "tipo": "introducao",
+      "minutos": 10,
+      "referencia": "Fp 4:4",
+      "descricao": "Perguntar o que diferencia alegria de circunstância.",
+      "materiais": ["Bíblia", "Quadro"]
+    },
+    {
+      "titulo": "Contexto histórico e exegese",
+      "tipo": "estudo",
+      "minutos": 25,
+      "referencia": "Fp 1:12-18",
+      "descricao": "Apresentar a situação de Paulo e o contexto da carta.",
+      "materiais": ["Bíblia", "Mapa"]
+    },
+    {
+      "titulo": "Leitura guiada e debate",
+      "tipo": "dinamica",
+      "minutos": 25,
+      "referencia": "Fp 3:7-9",
+      "descricao": "Dividir a turma em grupos para comparar argumentos.",
+      "materiais": ["Papel", "Canetas"]
+    },
+    {
+      "titulo": "Aplicação prática",
+      "tipo": "aplicacao",
+      "minutos": 20,
+      "referencia": "Fp 4:6-9",
+      "descricao": "Registrar uma atitude concreta para a semana.",
+      "materiais": ["Papel", "Canetas"]
+    },
+    {
+      "titulo": "Conclusão e oração",
+      "tipo": "conclusao",
+      "minutos": 10,
+      "referencia": "Fp 4:4",
+      "descricao": "Retomar o objetivo e ouvir uma síntese da turma."
+    }
+  ]
+}
