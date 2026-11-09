@@ -23,10 +23,19 @@ final class SeriesInsights
         $missingApplication = [];
         $missingConclusion = [];
         $warningsByLesson = [];
+        $minutesByWeek = [];
+        $datedLessons = [];
 
         foreach ($series['aulas'] as $index => $plan) {
             $number = $index + 1;
             $summary = $plan['resumo'];
+            $date = $plan['aula']['data'];
+            if ($date !== null) {
+                $calendarDay = new \DateTimeImmutable($date);
+                $weekKey = $calendarDay->format('o') . '-W' . $calendarDay->format('W');
+                $minutesByWeek[$weekKey] = ($minutesByWeek[$weekKey] ?? 0) + $plan['aula']['duracao'];
+                $datedLessons[] = ['aula' => $number, 'data' => $date];
+            }
             $planned += $summary['minutos_planejados'];
             $free += $summary['minutos_livres'];
             foreach ($summary['minutos_por_tipo'] as $type => $minutes) {
@@ -59,7 +68,32 @@ final class SeriesInsights
             }
         }
 
+        // Sort by calendar date without changing the original lesson sequence.
+        usort($datedLessons, static fn (array $a, array $b): int =>
+            strcmp($a['data'], $b['data']));
+        ksort($minutesByWeek);
+        $intervals = [];
+        $longGaps = [];
+        for ($i = 1, $total = count($datedLessons); $i < $total; $i++) {
+            $previous = $datedLessons[$i - 1];
+            $current = $datedLessons[$i];
+            $days = (new \DateTimeImmutable($previous['data']))
+                ->diff(new \DateTimeImmutable($current['data']))->days;
+            $gap = [
+                'aula_anterior' => $previous['aula'],
+                'aula_seguinte' => $current['aula'],
+                'dias' => $days,
+            ];
+            $intervals[] = $gap;
+            if ($days > 14) {
+                $longGaps[] = $gap;
+            }
+        }
+
         return [
+            'minutos_por_semana' => $minutesByWeek,
+            'intervalos_entre_aulas' => $intervals,
+            'pausas_acima_14_dias' => $longGaps,
             'quantidade_aulas' => $series['resumo']['quantidade'],
             'minutos_totais' => $series['resumo']['minutos_totais'],
             'minutos_planejados' => $planned,
