@@ -44,8 +44,7 @@ final class SeriesInsights
                 $uniqueReferences[$key] ??= $reference;
             }
 
-            if ($byType['aplicacao'] >= 0 &&
-                !array_key_exists('aplicacao', $summary['minutos_por_tipo'])) {
+            if (!array_key_exists('aplicacao', $summary['minutos_por_tipo'])) {
                 $missingApplication[] = $number;
             }
             if (!array_key_exists('conclusao', $summary['minutos_por_tipo'])) {
