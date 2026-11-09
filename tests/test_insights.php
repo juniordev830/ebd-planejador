@@ -38,6 +38,12 @@ $lessons = [
 ];
 $report = SeriesInsights::summarize($lessons);
 assertThat($report['quantidade_aulas'] === 2, 'contagem de aulas');
+assertThat($report['minutos_por_semana'] === ['2026-W45' => 50, '2026-W46' => 45],
+    'carga semanal distribuída pelo calendário ISO');
+assertThat($report['intervalos_entre_aulas'] === [
+    ['aula_anterior' => 1, 'aula_seguinte' => 2, 'dias' => 7]
+], 'intervalo semanal regular');
+assertThat($report['pausas_acima_14_dias'] === [], 'intervalo de sete dias não é pausa longa');
 assertThat($report['minutos_totais'] === 95, 'minutos totais');
 assertThat($report['minutos_planejados'] === 80, 'minutos planejados');
 assertThat($report['minutos_livres'] === 15, 'minutos livres');
@@ -50,6 +56,24 @@ assertThat($report['aulas_sem_aplicacao'] === [2], 'aulas sem aplicação');
 assertThat($report['aulas_sem_conclusao'] === [2], 'aulas sem conclusão');
 assertThat(count($report['avisos_por_aula']) === 1 &&
     $report['avisos_por_aula'][0]['aula'] === 2, 'avisos por aula');
+
+$reversed = SeriesInsights::summarize(array_reverse($lessons));
+assertThat($reversed['intervalos_entre_aulas'] === [
+    ['aula_anterior' => 2, 'aula_seguinte' => 1, 'dias' => 7]
+], 'datas ordenadas sem alterar referências originais');
+
+$farLesson = $lessons[0];
+$farLesson['data'] = '2026-12-06';
+$longSeries = SeriesInsights::summarize([$lessons[0], $lessons[1], $farLesson]);
+assertThat($longSeries['pausas_acima_14_dias'] === [
+    ['aula_anterior' => 2, 'aula_seguinte' => 3, 'dias' => 21]
+], 'pausa superior a 14 dias destacada');
+$undated = $lessons[0];
+unset($undated['data']);
+$reportWithoutDate = SeriesInsights::summarize([$undated]);
+assertThat($reportWithoutDate['minutos_por_semana'] === [] &&
+    $reportWithoutDate['intervalos_entre_aulas'] === [],
+    'aulas sem data não criam intervalos fictícios');
 
 try {
     SeriesInsights::summarize([$lessons[0], $lessons[0]]);
@@ -91,4 +115,4 @@ try {
 } finally {
     unlink($temp);
 }
-echo "SeriesInsights: 15 verificações OK.\n";
+echo "SeriesInsights: calendário semanal e lacunas verificados.\n";
