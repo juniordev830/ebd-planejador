@@ -2,8 +2,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/src/Planner.php';
+require_once __DIR__ . '/src/SeriesInsights.php';
 
 use Ebd\Planner;
+use Ebd\SeriesInsights;
 
 /**
  * Usage:
@@ -14,7 +16,7 @@ use Ebd\Planner;
  */
 function plannerCli(array $arguments): int
 {
-    $usage = "Uso: php planner.php arquivo.json [--format=json|markdown|student|csv] [--series]\n";
+    $usage = "Uso: php planner.php arquivo.json [--format=json|markdown|student|csv] [--series] [--insights]\n";
     if (count($arguments) < 2 || in_array($arguments[1], ['--help', '-h'], true)) {
         fwrite(STDERR, $usage);
         return count($arguments) > 1 ? 0 : 2;
@@ -23,8 +25,11 @@ function plannerCli(array $arguments): int
     $file = $arguments[1];
     $format = 'json';
     $series = false;
+    $insights = false;
     foreach (array_slice($arguments, 2) as $option) {
-        if ($option === '--series') {
+        if ($option === '--insights') {
+            $insights = true;
+        } elseif ($option === '--series') {
             $series = true;
         } elseif (str_starts_with($option, '--format=')) {
             $format = substr($option, 9);
@@ -36,6 +41,10 @@ function plannerCli(array $arguments): int
 
     if (!in_array($format, ['json', 'markdown', 'student', 'csv'], true)) {
         fwrite(STDERR, "Formato inválido: $format\n");
+        return 2;
+    }
+    if ($insights && !$series) {
+        fwrite(STDERR, "A opção --insights exige --series\n");
         return 2;
     }
     if ($series && $format !== 'json') {
@@ -56,7 +65,8 @@ function plannerCli(array $arguments): int
             throw new InvalidArgumentException('O JSON deve conter um objeto ou uma lista');
         }
 
-        $plan = $series ? Planner::series($input) : Planner::build($input);
+        $plan = $insights ? SeriesInsights::summarize($input) :
+            ($series ? Planner::series($input) : Planner::build($input));
         $output = match ($format) {
             'markdown' => Planner::markdown($plan),
             'student' => Planner::studentHandout($plan),

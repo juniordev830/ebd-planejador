@@ -1,0 +1,77 @@
+[
+  {
+    "titulo": "Estudo sobre perseveranca",
+    "data": "2026-11-08",
+    "turma": "Jovens",
+    "inicio": "09:00",
+    "duracao": 75,
+    "objetivo": "Planejar momentos de observacao e aplicacao do texto biblico.",
+    "blocos": [
+      {
+        "titulo": "Abertura",
+        "tipo": "introducao",
+        "minutos": 10,
+        "materiais": [
+          "Biblia",
+          "Quadro"
+        ]
+      },
+      {
+        "titulo": "Leitura e discussao",
+        "tipo": "estudo",
+        "minutos": 40,
+        "referencia": "Fp 3:12-14",
+        "materiais": [
+          "Biblia"
+        ]
+      },
+      {
+        "titulo": "Aplicacao",
+        "tipo": "aplicacao",
+        "minutos": 15
+      },
+      {
+        "titulo": "Conclusao",
+        "tipo": "conclusao",
+        "minutos": 10
+      }
+    ]
+  },
+  {
+    "titulo": "Unidade e servico",
+    "data": "2026-11-15",
+    "turma": "Jovens",
+    "inicio": "09:00",
+    "duracao": 75,
+    "blocos": [
+      {
+        "titulo": "Introducao",
+        "tipo": "introducao",
+        "minutos": 10
+      },
+      {
+        "titulo": "Estudo em grupos",
+        "tipo": "estudo",
+        "minutos": 40,
+        "referencia": "Fp 2:1-4",
+        "materiais": [
+          "Biblia",
+          "Papel"
+        ]
+      },
+      {
+        "titulo": "Dinamica",
+        "tipo": "dinamica",
+        "minutos": 15,
+        "materiais": [
+          "Papel"
+        ]
+      },
+      {
+        "titulo": "Conclusao",
+        "tipo": "conclusao",
+        "minutos": 10
+      }
+    ]
+  }
+]

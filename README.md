@@ -28,9 +28,21 @@ Para uma série de aulas, passe um JSON com uma lista de objetos no mesmo format
 
 ```sh
 php planner.php examples/serie.json --series
+php planner.php examples/serie.json --series --insights
 ```
 
 A saída é enviada para stdout; para salvar um arquivo, redirecione explicitamente: `php planner.php examples/aula-completa.json --format=markdown > roteiro.md`. O programa não escreve em arquivos por conta própria.
+
+
+## Diagnóstico de uma série de aulas
+
+Use `--series --insights` para um relatório JSON consolidado com duração total, tempo efetivamente planejado, minutos livres, minutos por tipo de bloco, materiais/referências sem duplicidade e identificação das aulas sem aplicação ou conclusão.
+
+```sh
+php planner.php examples/serie.json --series --insights
+```
+
+A análise reutiliza a validação de cada aula e rejeita datas duplicadas. Não interpreta textos bíblicos nem acessa conteúdo de editoras. O resultado serve ao professor para revisar o planejamento; a ausência de aplicação ou conclusão é um **sinal de revisão**, não uma avaliação pedagógica automática.
 
 ## Modelo de entrada
 
@@ -58,6 +70,7 @@ php -l src/Planner.php
 php -l tests/test_planner.php
 php main.php --self-test
 php tests/test_planner.php
+php tests/test_insights.php
 ```
 
 A suíte inclui 26 cenários de domínio, entrada inválida, exportações, segurança de CSV e CLI, além do teste original. O GitHub Actions executa a mesma verificação em pushes e PRs.
@@ -76,3 +89,7 @@ examples/                Entradas fictícias e autorais
 ## Limites
 
 O aplicativo organiza informações fornecidas pelo professor; não valida teologicamente as referências, não oferece login, banco de dados, calendário compartilhado ou edição web. Os textos de exemplo não representam material oficial da CPAD. A arquitetura futura está em `ARQUITETURA.md`.
+
+### Calendário semanal e intervalos entre aulas
+
+O relatório `--series --insights` agora inclui `minutos_por_semana` (semanas ISO no formato `AAAA-WSS`), `intervalos_entre_aulas` e `pausas_acima_14_dias`. O cálculo ordena cronologicamente apenas as aulas com data e preserva o número original de cada aula; intervalos de **mais de 14 dias** são apontados para revisão do calendário. Aulas sem data continuam no planejamento, mas não produzem datas inventadas. Isso não substitui a escolha pedagógica do professor.
