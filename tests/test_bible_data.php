@@ -114,7 +114,7 @@ $tests = [
         bibleRejects(static fn () => BibleData::lookup('Fp 4:4', $root . '/nope', 'TEST'), 'Diretório');
     },
     'detecta JSON inválido e versículo duplicado' => static function () use ($root): void {
-        file_put_contents($root . '/bolls/TEST/50/1.json', '{');
+        file_put_contents($root . '/bolls/TEST/50/1.json', '{bad');
         bibleRejects(static fn () => BibleData::lookup('Fp 1:1', $root, 'TEST'), 'JSON inválido');
         file_put_contents($root . '/bolls/TEST/50/1.json', '[{"verse":1,"text":"a"},{"verse":1,"text":"b"}]');
         bibleRejects(static fn () => BibleData::lookup('Fp 1:1', $root, 'TEST'), 'duplicado');
