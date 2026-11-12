@@ -11,4 +11,4 @@ jobs:
         with:
           persist-credentials: false
       - name: Analisar sintaxe e testar
-        run: docker run --rm -v "$PWD:/work" -w /work php:8.3-cli sh -c 'php -l main.php && php -l planner.php && php -l src/Planner.php && php -l src/SeriesInsights.php && php -l tests/test_planner.php && php -l tests/test_insights.php && php main.php --self-test && php tests/test_planner.php && php tests/test_insights.php'
+        run: docker run --rm -v "$PWD:/work" -w /work php:8.3-cli sh -c 'php -l main.php && php -l planner.php && php -l src/Planner.php && php -l src/SeriesInsights.php && php -l tests/test_planner.php && php -l tests/test_insights.php && php -l src/BibleData.php && php -l tests/test_bible_data.php && php main.php --self-test && php tests/test_planner.php && php tests/test_insights.php && php tests/test_bible_data.php'
