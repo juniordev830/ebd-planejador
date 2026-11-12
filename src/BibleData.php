@@ -97,6 +97,7 @@ final class BibleData
             throw new \RuntimeException('Estrutura inválida no capítulo bíblico');
         }
         $verses = [];
+        $seenVerseNumbers = [];
         foreach ($rows as $row) {
             if (!is_array($row) || !is_int($row['verse'] ?? null)
                 || $row['verse'] < 1 || $row['verse'] > 200
@@ -105,9 +106,11 @@ final class BibleData
                 throw new \RuntimeException('Versículo malformado na base bíblica');
             }
             $number = $row['verse'];
-            if (isset($verses[$number])) {
+            // A integridade do capítulo inteiro importa, mesmo ao consultar um único verso.
+            if (isset($seenVerseNumbers[$number])) {
                 throw new \RuntimeException('Versículo duplicado na base bíblica');
             }
+            $seenVerseNumbers[$number] = true;
             if ($first === null || ($number >= $first && $number <= $last)) {
                 $verses[$number] = ['numero' => $number, 'texto' => $row['text']];
             }
