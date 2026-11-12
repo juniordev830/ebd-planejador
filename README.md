@@ -93,3 +93,7 @@ O aplicativo organiza informações fornecidas pelo professor; não valida teolo
 ### Calendário semanal e intervalos entre aulas
 
 O relatório `--series --insights` agora inclui `minutos_por_semana` (semanas ISO no formato `AAAA-WSS`), `intervalos_entre_aulas` e `pausas_acima_14_dias`. O cálculo ordena cronologicamente apenas as aulas com data e preserva o número original de cada aula; intervalos de **mais de 14 dias** são apontados para revisão do calendário. Aulas sem data continuam no planejamento, mas não produzem datas inventadas. Isso não substitui a escolha pedagógica do professor.
+
+## Documentação de desenvolvimento
+
+O [guia de validação e evolução](docs/GUIA_DE_VALIDACAO.md) registra o estado atual, os testes e os próximos incrementos deste projeto.
