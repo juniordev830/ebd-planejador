@@ -77,9 +77,10 @@ final class BibleData
             throw new \InvalidArgumentException('Diretório da base bíblica não encontrado (esperado: bolls/)');
         }
         // Resolve symlinks antes da leitura para impedir que uma tradução consulte outra.
-        $translationRoot = realpath($root . '/bolls/' . $translation);
-        if ($translationRoot === false || !is_dir($translationRoot)
-            || !str_starts_with($translationRoot, $root . DIRECTORY_SEPARATOR . 'bolls' . DIRECTORY_SEPARATOR)) {
+        $expectedTranslationRoot = $root . '/bolls/' . $translation;
+        $translationRoot = realpath($expectedTranslationRoot);
+        if ($translationRoot === false || $translationRoot !== $expectedTranslationRoot
+            || !is_dir($translationRoot)) {
             throw new \RuntimeException('Tradução não disponível na base local');
         }
         $file = realpath($translationRoot . '/' . $bookNumber . '/' . $chapter . '.json');
