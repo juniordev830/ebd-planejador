@@ -141,6 +141,17 @@ $tests = [
             throw new RuntimeException('O Markdown deve escapar HTML vindo de dados externos');
         }
     },
+    'neutraliza links e formatação Markdown na base externa' => static function () use ($root): void {
+        file_put_contents($root . '/bolls/TEST/50/3.json', json_encode([
+            ['verse' => 1, 'text' => 'Texto [clique](https://exemplo.invalid) **formatação** e _ênfase_.'],
+        ], JSON_THROW_ON_ERROR));
+        $markdown = BibleData::markdown([BibleData::lookup('Fp 3:1', $root, 'TEST')]);
+        if (str_contains($markdown, '[clique](') || str_contains($markdown, '**formatação**')
+            || !str_contains($markdown, '\[clique\]') || !str_contains($markdown, '\*')
+            || !str_contains($markdown, '\_ênfase\_')) {
+            throw new RuntimeException('Markdown vindo da base externa não foi neutralizado');
+        }
+    },
     'CLI combina planejamento e consulta no JSON' => static function () use ($root, $lessonFile): void {
         [$code, $out, $err] = bibleRunCli([$lessonFile, '--format=json', '--biblia-dir=' . $root, '--traducao=TEST']);
         bibleSame(0, $code, 'CLI deve concluir: ' . $err);
