@@ -128,6 +128,17 @@ $tests = [
         ], JSON_THROW_ON_ERROR));
         bibleRejects(static fn () => BibleData::lookup('Fp 2:1', $root, 'TEST'), 'duplicado');
     },
+    'impede que symlink misture textos de traduções' => static function () use ($root): void {
+        mkdir($root . '/bolls/OUTRA/50', 0700, true);
+        $target = $root . '/bolls/OUTRA/50/8.json';
+        $link = $root . '/bolls/TEST/50/8.json';
+        file_put_contents($target, json_encode([
+            ['verse' => 1, 'text' => 'Texto de tradução diferente.'],
+        ], JSON_THROW_ON_ERROR));
+        if (function_exists('symlink') && @symlink($target, $link)) {
+            bibleRejects(static fn () => BibleData::lookup('Fp 8:1', $root, 'TEST'), 'Capítulo não disponível');
+        }
+    },
     'associa referências ao plano validado' => static function () use ($root, $lesson): void {
         $plan = Planner::build($lesson);
         $passages = BibleData::forLesson($plan, $root, 'TEST');
