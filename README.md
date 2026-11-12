@@ -86,6 +86,25 @@ examples/                Entradas fictícias e autorais
 .github/workflows/ci.yml Validação automatizada
 ```
 
+## Integração opcional com a base bíblica importada
+
+O planejador agora pode consultar versículos do repositório [adc-de-fuc-ebd](https://github.com/juniordev830/adc-de-fuc-ebd), que armazena textos em `bolls/TRADUCAO/LIVRO/CAPITULO.json`. O código da integração pertence a este repositório; o corpus extenso permanece na origem, sem duplicação de arquivos grandes ou publicação acidental de traduções.
+
+Para instalar localmente uma tradução e utilizá-la no mesmo projeto de EBD (necessita de Git e internet **somente na instalação**):
+
+```sh
+bash scripts/instalar-base-biblica.sh ACF11
+php planner.php examples/aula-completa.json --biblia-dir=data/bible-data --traducao=ACF11 --format=markdown
+```
+
+Também funciona com `--format=json` (chave adicional `textos_biblicos`) e `--format=student`, preservando o planejamento existente. As referências aceitas incluem nomes completos e abreviações como `João 3:16`, `Fp 4:4-6`, `Sl 23` e `1 Co 12:12`. A tradução deve corresponder a um diretório disponível em `bolls/`. A consulta ocorre **offline**, depois de a base estar instalada.
+
+Para trabalhar sem usar o instalador, clone o repositório importado em `data/bible-data/` ou informe seu caminho com `--biblia-dir=/caminho/para/adc-de-fuc-ebd`. A pasta local `data/bible-data/` está no `.gitignore`.
+
+**Limitações:** a consulta permite uma aula por execução, não séries ou CSV; referências devem indicar um capítulo com versículo(s) opcional(is), e capítulos inexistentes falham com mensagem clara. O arquivo externo é lido em modo somente leitura, com limites de tamanho e validação de estrutura. O planejador continua funcionando completamente sem a base instalada.
+
+**Licenciamento:** o repositório importado não declara uma licença. Ter acesso ao código-fonte não autoriza automaticamente a redistribuição de seus textos ou traduções. Não publique cópias dos dados sem verificar os direitos. Os testes usam apenas trechos sintéticos criados para o projeto.
+
 ## Limites
 
 O aplicativo organiza informações fornecidas pelo professor; não valida teologicamente as referências, não oferece login, banco de dados, calendário compartilhado ou edição web. Os textos de exemplo não representam material oficial da CPAD. A arquitetura futura está em `ARQUITETURA.md`.
