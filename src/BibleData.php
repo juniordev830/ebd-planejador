@@ -186,7 +186,12 @@ final class BibleData
 
     private static function escapeMarkdown(string $value): string
     {
-        $safe = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
-        return str_replace(["\r", "\n", '|', '<'], [' ', ' ', '\\|', '&lt;'], $safe);
+        // Texto da base é conteúdo não confiável: remover quebras e escapar HTML e Markdown.
+        $safe = htmlspecialchars(str_replace(["\r", "\n"], ' ', $value), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', true);
+        $escape = [];
+        foreach (['\\', chr(96), '*', '_', '[', ']', '(', ')', '{', '}', '#', '!', '|', '>'] as $marker) {
+            $escape[$marker] = '\\' . $marker;
+        }
+        return strtr($safe, $escape);
     }
 }
