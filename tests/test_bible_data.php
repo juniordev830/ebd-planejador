@@ -138,6 +138,10 @@ $tests = [
         if (function_exists('symlink') && @symlink($target, $link)) {
             bibleRejects(static fn () => BibleData::lookup('Fp 8:1', $root, 'TEST'), 'Capítulo não disponível');
         }
+        // Mesmo um diretório de tradução inteiro não pode apontar para outra tradução.
+        if (function_exists('symlink') && @symlink($root . '/bolls/OUTRA', $root . '/bolls/ALIAS')) {
+            bibleRejects(static fn () => BibleData::lookup('Fp 8:1', $root, 'ALIAS'), 'Tradução não disponível');
+        }
     },
     'associa referências ao plano validado' => static function () use ($root, $lesson): void {
         $plan = Planner::build($lesson);
