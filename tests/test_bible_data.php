@@ -119,6 +119,15 @@ $tests = [
         file_put_contents($root . '/bolls/TEST/50/1.json', '[{"verse":1,"text":"a"},{"verse":1,"text":"b"}]');
         bibleRejects(static fn () => BibleData::lookup('Fp 1:1', $root, 'TEST'), 'duplicado');
     },
+    'rejeita duplicatas fora da faixa solicitada' => static function () use ($root): void {
+        // A seleção de um verso não deve ocultar corrupção no restante do capítulo.
+        file_put_contents($root . '/bolls/TEST/50/2.json', json_encode([
+            ['verse' => 1, 'text' => 'Versículo único solicitado.'],
+            ['verse' => 2, 'text' => 'Duplicata A.'],
+            ['verse' => 2, 'text' => 'Duplicata B.'],
+        ], JSON_THROW_ON_ERROR));
+        bibleRejects(static fn () => BibleData::lookup('Fp 2:1', $root, 'TEST'), 'duplicado');
+    },
     'associa referências ao plano validado' => static function () use ($root, $lesson): void {
         $plan = Planner::build($lesson);
         $passages = BibleData::forLesson($plan, $root, 'TEST');
