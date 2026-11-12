@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/src/Planner.php';
 require_once __DIR__ . '/src/SeriesInsights.php';
+require_once __DIR__ . '/src/BibleData.php';
 
 use Ebd\Planner;
 use Ebd\SeriesInsights;
+use Ebd\BibleData;
 
 /**
  * Usage:
@@ -16,7 +18,7 @@ use Ebd\SeriesInsights;
  */
 function plannerCli(array $arguments): int
 {
-    $usage = "Uso: php planner.php arquivo.json [--format=json|markdown|student|csv] [--series] [--insights]\n";
+    $usage = "Uso: php planner.php arquivo.json [--format=json|markdown|student|csv] [--series] [--insights] [--biblia-dir=CAMINHO] [--traducao=ACF11]\n";
     if (count($arguments) < 2 || in_array($arguments[1], ['--help', '-h'], true)) {
         fwrite(STDERR, $usage);
         return count($arguments) > 1 ? 0 : 2;
@@ -26,11 +28,19 @@ function plannerCli(array $arguments): int
     $format = 'json';
     $series = false;
     $insights = false;
+    $bibleDirectory = null;
+    $translation = 'ACF11';
+    $translationProvided = false;
     foreach (array_slice($arguments, 2) as $option) {
         if ($option === '--insights') {
             $insights = true;
         } elseif ($option === '--series') {
             $series = true;
+        } elseif (str_starts_with($option, '--biblia-dir=')) {
+            $bibleDirectory = substr($option, strlen('--biblia-dir='));
+        } elseif (str_starts_with($option, '--traducao=')) {
+            $translation = substr($option, strlen('--traducao='));
+            $translationProvided = true;
         } elseif (str_starts_with($option, '--format=')) {
             $format = substr($option, 9);
         } else {
@@ -45,6 +55,11 @@ function plannerCli(array $arguments): int
     }
     if ($insights && !$series) {
         fwrite(STDERR, "A opção --insights exige --series\n");
+        return 2;
+    }
+    if (($bibleDirectory !== null && ($bibleDirectory === '' || $series || $format === 'csv'))
+        || ($translationProvided && $bibleDirectory === null)) {
+        fwrite(STDERR, "Consulta bíblica exige --biblia-dir e aceita apenas uma aula nos formatos json, markdown ou student\n");
         return 2;
     }
     if ($series && $format !== 'json') {
@@ -67,12 +82,20 @@ function plannerCli(array $arguments): int
 
         $plan = $insights ? SeriesInsights::summarize($input) :
             ($series ? Planner::series($input) : Planner::build($input));
+        $passages = null;
+        if ($bibleDirectory !== null) {
+            $passages = BibleData::forLesson($plan, $bibleDirectory, $translation);
+            $plan['textos_biblicos'] = $passages;
+        }
         $output = match ($format) {
             'markdown' => Planner::markdown($plan),
             'student' => Planner::studentHandout($plan),
             'csv' => Planner::csv($plan),
             default => json_encode($plan, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n",
         };
+        if ($passages !== null && ($format === 'markdown' || $format === 'student')) {
+            $output .= BibleData::markdown($passages);
+        }
         fwrite(STDOUT, $output);
         return 0;
     } catch (JsonException | InvalidArgumentException | RuntimeException $error) {
