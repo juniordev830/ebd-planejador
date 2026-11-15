@@ -1,51 +1,32 @@
-# Arquitetura proposta — EBD Planejador
+# Arquitetura — EBD Planejador
 
 ## Objetivo
 
-Planejamento de aulas, referências, dinâmicas e materiais de estudo.
+Planejar aulas de Escola Bíblica Dominical com referências, cronograma, materiais, saídas para professor e aluno e integração **opcional** com uma base bíblica offline.
 
-## Escolha técnica
+## Estado atual
 
-Planejamento de aulas com referências, duração, materiais e exportação de conteúdo autoral.
+Aplicação funcional em **PHP 8.3+**, sem Composer, banco de dados ou framework. A proposta antiga de Laravel e MariaDB não faz parte do código atual.
 
-Stack proposta: PHP, Laravel, Blade e MariaDB.
+| Camada | Arquivo | Responsabilidade |
+| --- | --- | --- |
+| Interface legada | `main.php` | Planejamento simples compatível |
+| Interface principal | `planner.php` | Importação de aulas em JSON e exportação |
+| Domínio | `src/Planner.php` | Validação, cronograma, resumos e relatórios |
+| Séries | `src/SeriesInsights.php` | Consolidação e análise de calendário |
+| Adaptador externo | `src/BibleData.php` | Leitura de um corpus local sem rede |
+| Testes | `tests/` | Casos de domínio, CLI e integração |
+| Dados opcionais | `data/bible-data/` | Checkout local da base importada, ignorado pelo Git |
 
-## Conceitos de domínio a detalhar
+## Integração dos projetos
 
-- Aula
-- Seção
-- Referência
-- Material
+- **Origem dos dados:** `juniordev830/adc-de-fuc-ebd`, com tradução organizada em `bolls/<traducao>/<livro>/<capitulo>.json`.
+- **Aplicação de destino:** `juniordev830/ebd-planejador`, com novo adaptador `BibleData`.
+- **Instalação:** script opcional de sparse checkout de uma tradução. O repositório do planejador não inclui os arquivos bíblicos nem modifica o repositório importado.
+- **Contrato:** referência `Fp 4:4-6`, diretório local e código da tradução retornam uma lista de versículos. O leitor valida referências e conteúdo de arquivos.
+- **Compatibilidade:** sem `--biblia-dir` o planejador mantém a experiência anterior. Com a opção, produz `textos_biblicos` no JSON e uma seção de leituras nos roteiros Markdown e student.
+- **Licença:** como o corpus importado não informa licença, os dados não foram copiados para o histórico do planejador.
 
-## Responsabilidades
+## Próximos passos possíveis
 
-| Camada | Responsabilidade |
-| --- | --- |
-| Entrada e interface | Receber dados, mostrar validações e apresentar o resultado |
-| Casos de uso | Coordenar cada operação do escopo inicial |
-| Domínio | Definir regras, invariantes e transformações sem depender da interface |
-| Adaptadores | Isolar arquivos, persistência e serviços externos quando forem adicionados |
-
-A estrutura de código será ajustada às convenções de PHP; estas camadas descrevem responsabilidades e não impõem uma quantidade fixa de pastas.
-
-## Entregas por etapas
-
-1. Escrever um cenário de uso com entrada e resultado esperado.
-2. Implementar a menor operação útil e tratar entrada inválida.
-3. Concluir os demais itens do escopo inicial.
-4. Adicionar persistência ou integração somente onde o fluxo precisar.
-5. Registrar instalação, execução, validação e limitações.
-
-## Escopo funcional
-
-- [ ] Planejar sequência da aula
-- [ ] Organizar referências e dinâmicas
-- [ ] Exportar material autoral para os alunos
-
-## Dados e integrações
-
-Não há serviços externos conectados nem dados reais neste pacote. Exemplos devem ser fictícios. Projetos que consultarem fontes públicas devem registrar a fonte, a data e as condições de uso junto dos dados importados.
-
-## Estado de validação
-
-A especificação foi preparada. Compilação e testes da aplicação ainda não se aplicam porque o código não foi implementado.
+Separar o parser de referências por idiomas; considerar um índice de livros e disponibilidade de traduções; implementar integração web se houver necessidade real. Qualquer publicação de texto bíblico deve respeitar a licença da edição utilizada.

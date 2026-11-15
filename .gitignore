@@ -12,3 +12,6 @@ target/
 vendor/
 node_modules/
 *.log
+
+# Base bíblica opcional importada (dados externos; nunca versionar aqui).
+/data/bible-data/
