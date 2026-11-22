@@ -120,3 +120,9 @@ O relatório `--series --insights` agora inclui `minutos_por_semana` (semanas IS
 ## Documentação de desenvolvimento
 
 O [guia de validação e evolução](docs/GUIA_DE_VALIDACAO.md) registra o estado atual, os testes e os próximos incrementos deste projeto.
+
+## Proteções da CLI para arquivos e opções
+
+O arquivo de aula ou série é lido com limite **efetivo de 2 MB**: a CLI lê no máximo 2.000.001 bytes e rejeita entradas que ultrapassem 2.000.000 bytes antes de chamar o decodificador JSON. Isso também protege quando um arquivo cresce após a verificação de metadados.
+
+Os argumentos `--format`, `--series`, `--insights`, `--biblia-dir` e `--traducao` não podem aparecer repetidos. Em vez de aplicar silenciosamente o último valor, o programa retorna **código 2** com mensagem explicativa. Para validar essas situações, execute `php tests/test_planner.php`.
