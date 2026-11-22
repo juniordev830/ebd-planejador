@@ -273,6 +273,21 @@ $tests = [
             unlink($file);
         }
     },
+    'cli rejects repeated flags instead of silently overwriting values' => function (): void {
+        $file = tempnam(sys_get_temp_dir(), 'ebd');
+        try {
+            file_put_contents($file, json_encode(lesson(), JSON_THROW_ON_ERROR));
+            foreach ([['--format=markdown', '--format=json'],
+                      ['--series', '--series']] as $options) {
+                [$code, $out, $error] = runCli([$file, ...$options]);
+                same(2, $code);
+                same('', $out);
+                truth(str_contains($error, 'repetida'), 'Erro de parâmetro duplicado ausente');
+            }
+        } finally {
+            unlink($file);
+        }
+    },
     'cli validates malformed input and options' => function (): void {
         $file = tempnam(sys_get_temp_dir(), 'ebd');
         try {
