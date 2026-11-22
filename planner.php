@@ -31,7 +31,14 @@ function plannerCli(array $arguments): int
     $bibleDirectory = null;
     $translation = 'ACF11';
     $translationProvided = false;
+    $seenOptions = [];
     foreach (array_slice($arguments, 2) as $option) {
+        $flag = explode('=', $option, 2)[0];
+        if (isset($seenOptions[$flag])) {
+            fwrite(STDERR, "Opção repetida: $flag\n");
+            return 2;
+        }
+        $seenOptions[$flag] = true;
         if ($option === '--insights') {
             $insights = true;
         } elseif ($option === '--series') {
