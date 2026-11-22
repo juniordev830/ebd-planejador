@@ -71,9 +71,13 @@ function plannerCli(array $arguments): int
         if (!is_file($file) || !is_readable($file)) {
             throw new RuntimeException('Arquivo não encontrado ou sem permissão de leitura');
         }
-        $text = file_get_contents($file);
+        // Bound the actual read even when the file grows after a stat check.
+        $text = file_get_contents($file, false, null, 0, 2_000_001);
         if ($text === false) {
             throw new RuntimeException('Falha ao ler o arquivo');
+        }
+        if (strlen($text) > 2_000_000) {
+            throw new InvalidArgumentException('JSON da aula excede 2 MB');
         }
         $input = json_decode($text, true, 64, JSON_THROW_ON_ERROR);
         if (!is_array($input)) {
