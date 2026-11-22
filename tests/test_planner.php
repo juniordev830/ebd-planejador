@@ -261,6 +261,18 @@ $tests = [
             unlink($file);
         }
     },
+    'cli rejects oversized JSON before decoding' => function (): void {
+        $file = tempnam(sys_get_temp_dir(), 'ebd');
+        try {
+            file_put_contents($file, str_repeat('x', 2_000_001));
+            [$code, $out, $error] = runCli([$file]);
+            same(2, $code);
+            same('', $out);
+            truth(str_contains($error, '2 MB'), 'Limite de entrada ausente');
+        } finally {
+            unlink($file);
+        }
+    },
     'cli validates malformed input and options' => function (): void {
         $file = tempnam(sys_get_temp_dir(), 'ebd');
         try {
