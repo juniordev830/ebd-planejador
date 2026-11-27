@@ -75,6 +75,9 @@ function plannerCli(array $arguments): int
         if ($text === false) {
             throw new RuntimeException('Falha ao ler o arquivo');
         }
+        if (str_starts_with($text, "\xEF\xBB\xBF")) {
+            $text = substr($text, 3);
+        }
         $input = json_decode($text, true, 64, JSON_THROW_ON_ERROR);
         if (!is_array($input)) {
             throw new InvalidArgumentException('O JSON deve conter um objeto ou uma lista');
