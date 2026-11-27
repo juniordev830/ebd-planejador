@@ -20,6 +20,9 @@ try {
     }
     if(count($argv)!==3 || !ctype_digit($argv[1])) throw new InvalidArgumentException('Uso: php main.php MINUTOS aula.json');
     $text=file_get_contents($argv[2]); if($text===false) throw new RuntimeException('Falha de leitura');
+    if (str_starts_with($text, "\xEF\xBB\xBF")) {
+        $text = substr($text, 3);
+    }
     $blocks=json_decode($text,true,128,JSON_THROW_ON_ERROR); if(!is_array($blocks)) throw new InvalidArgumentException('Esperada lista de blocos');
     echo json_encode(plan($blocks,(int)$argv[1]),JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)."\n";
 } catch(Throwable $e) { fwrite(STDERR,"Erro: {$e->getMessage()}\n"); exit(2); }
